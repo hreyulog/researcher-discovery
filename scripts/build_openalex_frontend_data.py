@@ -16,9 +16,9 @@ AUTH = Path(os.environ.get("SPB_AUTH_CSV", ROOT / "data_openalex" / "authorships
 INST = Path(os.environ.get("SPB_INST_CSV", ROOT / "data_openalex" / "institutions_spb.csv"))
 
 TOP_AUTHORS = int(os.environ.get("TOP_AUTHORS", "12000"))
-TOP_EDGES_PER_WINDOW = int(os.environ.get("TOP_EDGES_PER_WINDOW", "7000"))
-TOP_EDGES_ALL = int(os.environ.get("TOP_EDGES_ALL", "12000"))
-EGO_EDGES_PER_AUTHOR = int(os.environ.get("EGO_EDGES_PER_AUTHOR", "24"))
+TOP_EDGES_PER_WINDOW = int(os.environ.get("TOP_EDGES_PER_WINDOW", "3500"))
+TOP_EDGES_ALL = int(os.environ.get("TOP_EDGES_ALL", "5000"))
+EGO_EDGES_PER_AUTHOR = int(os.environ.get("EGO_EDGES_PER_AUTHOR", "8"))
 MAX_AUTHORS_PER_WORK = int(os.environ.get("MAX_AUTHORS_PER_WORK", "50"))
 
 

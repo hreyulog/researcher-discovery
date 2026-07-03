@@ -13,6 +13,12 @@ const state = {
 
 const fmt = new Intl.NumberFormat('en-US');
 const $ = (id) => document.getElementById(id);
+const DISPLAY_LIMITS = {
+  fullEdges: 650,
+  fullNodes: 600,
+  filteredEdges: 900,
+  filteredNodes: 700,
+};
 const institutionPalette = [
   '#58a6ff', '#f778ba', '#56d364', '#e3b341', '#a371f7', '#ff7b72',
   '#39c5cf', '#ffa657', '#7ee787', '#d2a8ff', '#79c0ff', '#db6d28',
@@ -229,8 +235,8 @@ function buildAdjacency(edges) {
 
 function egoNetwork(nodes, edges, author, depth) {
   const maxDepth = Math.max(1, Math.min(3, Number(depth) || 1));
-  const perNodeLimits = { 1: 90, 2: 36, 3: 18 };
-  const maxNodes = { 1: 120, 2: 420, 3: 850 }[maxDepth];
+  const perNodeLimits = { 1: 50, 2: 18, 3: 8 };
+  const maxNodes = { 1: 80, 2: 200, 3: 320 }[maxDepth];
   const adjacency = buildAdjacency(edges);
   const distance = new Map([[author.id, 0]]);
   let frontier = [author.id];
@@ -260,7 +266,7 @@ function egoNetwork(nodes, edges, author, depth) {
       const db = Math.max(distance.get(b.source) || 0, distance.get(b.target) || 0);
       return d3.ascending(da, db) || d3.descending(a.weight, b.weight);
     })
-    .slice(0, maxDepth === 1 ? 180 : maxDepth === 2 ? 900 : 1600);
+    .slice(0, maxDepth === 1 ? 120 : maxDepth === 2 ? 360 : 650);
 
   const edgeNodeIds = new Set([author.id]);
   keptEdges.forEach(e => { edgeNodeIds.add(e.source); edgeNodeIds.add(e.target); });
@@ -271,13 +277,18 @@ function egoNetwork(nodes, edges, author, depth) {
   return { nodes: visibleNodes, edges: keptEdges };
 }
 
-function previewNetwork(nodes, edges, edgeLimit) {
-  const previewEdges = edges.slice(0, edgeLimit);
+function previewNetwork(nodes, edges, edgeLimit, nodeLimit) {
+  const previewEdges = [];
   const keep = new Set();
-  previewEdges.forEach(e => {
+  for (const e of edges) {
+    const nextSize = keep.size + Number(!keep.has(e.source)) + Number(!keep.has(e.target));
+    if (previewEdges.length >= edgeLimit) break;
+    if (nextSize > nodeLimit) continue;
     keep.add(e.source);
     keep.add(e.target);
-  });
+    previewEdges.push(e);
+    if (keep.size >= nodeLimit && previewEdges.length >= Math.floor(edgeLimit * 0.6)) break;
+  }
   return {
     nodes: nodes.filter(n => keep.has(n.id)),
     edges: previewEdges,
@@ -311,9 +322,12 @@ function graphDataForMode() {
     edges = edges.filter(e => seed.has(e.source) || seed.has(e.target));
     edges.forEach(e => { keep.add(e.source); keep.add(e.target); });
     nodes = nodes.filter(n => keep.has(n.id));
+    const preview = previewNetwork(nodes, edges, DISPLAY_LIMITS.filteredEdges, DISPLAY_LIMITS.filteredNodes);
+    nodes = preview.nodes;
+    edges = preview.edges;
     label = state.selectedInstitution;
   } else {
-    const preview = previewNetwork(nodes, edges, net.preview_edges || 12000);
+    const preview = previewNetwork(nodes, edges, DISPLAY_LIMITS.fullEdges, DISPLAY_LIMITS.fullNodes);
     nodes = preview.nodes;
     edges = preview.edges;
   }
