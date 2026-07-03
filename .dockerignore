@@ -1,0 +1,9 @@
+.git
+data_openalex
+data_dblp
+frontend/data
+frontend/data_dblp
+*.log
+*.part
+__pycache__
+*.pyc

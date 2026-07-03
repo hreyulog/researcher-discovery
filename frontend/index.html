@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Saint Petersburg Researcher Network Explorer</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Saint Petersburg Researcher Network Explorer</h1>
+      <p>OpenAlex · all available years · coauthorship networks, temporal slices, search</p>
+    </div>
+    <div class="badge">Static explorer</div>
+  </header>
+
+  <main>
+    <section class="panel controls">
+      <div class="control-group">
+        <label>Window</label>
+        <select id="windowSelect">
+          <option value="all">All years</option>
+        </select>
+      </div>
+      <div class="control-group wide">
+        <label>Search authors / institutions / paper titles</label>
+        <input id="searchInput" placeholder="e.g. Ivanov, ITMO, St Petersburg University, quantum..." />
+      </div>
+      <div class="control-group">
+        <label id="groupSelectLabel">Institution filter</label>
+        <select id="institutionSelect">
+          <option value="">All institutions</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Network mode</label>
+        <select id="modeSelect">
+          <option value="full">Core network</option>
+          <option value="ego">Author ego network</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Ego depth</label>
+        <select id="egoDepthSelect">
+          <option value="1">1 hop</option>
+          <option value="2">2 hops</option>
+          <option value="3">3 hops</option>
+        </select>
+      </div>
+      <div class="control-group buttons">
+        <button id="applyBtn">Apply</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </section>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="layout">
+      <aside class="panel sidebar">
+        <h2>Search Results</h2>
+        <div id="searchResults" class="results muted">Type a keyword to search authors, institutions, and papers.</div>
+        <h2>Node Details</h2>
+        <div id="nodeDetails" class="details muted">Click a network node to inspect it.</div>
+        <h2 id="legendTitle">Institution Colors</h2>
+        <div id="institutionLegend" class="legend muted">Main institutions appear after the network loads.</div>
+        <h2>Notes</h2>
+        <p class="small" id="datasetNote">Nodes are authors and edges are coauthorship links. Node colors represent each author's main institution.</p>
+      </aside>
+
+      <section class="panel graph-panel">
+        <div class="graph-toolbar">
+          <div id="graphTitle">Network</div>
+          <div class="small" id="graphHint">Drag nodes, use the wheel to zoom, click nodes for details.</div>
+        </div>
+        <svg id="graph"></svg>
+        <div class="graph-range-control">
+          <div class="range-control">
+            <label for="yearSlider">Year window</label>
+            <input id="yearSlider" type="range" min="0" max="0" value="0" step="1" />
+            <span id="yearSliderValue" class="range-value">All years</span>
+          </div>
+          <div class="range-control">
+            <label for="egoDepthSlider">Ego depth</label>
+            <input id="egoDepthSlider" type="range" min="1" max="3" value="1" step="1" />
+            <span id="egoDepthSliderValue" class="range-value">1 hop</span>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel bottom-grid">
+      <div>
+        <h2>Yearly Output</h2>
+        <svg id="yearChart" class="chart"></svg>
+      </div>
+      <div>
+        <h2>Work Types</h2>
+        <div id="typeList" class="type-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

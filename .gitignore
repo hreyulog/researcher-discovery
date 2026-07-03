@@ -1,0 +1,7 @@
+data_openalex/
+data_dblp/
+*.log
+*.part
+__pycache__/
+*.pyc
+frontend/data
